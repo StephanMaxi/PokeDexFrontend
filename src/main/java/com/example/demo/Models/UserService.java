@@ -1,17 +1,23 @@
 package com.example.demo.Models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.registration.token.ConfirmationToken;
+import com.example.demo.registration.token.ConfirmationTokenService;
 
 import jakarta.transaction.Transactional;
 
@@ -22,7 +28,9 @@ public class UserService implements UserDetailsService{
     private final static String   USER_NOT_FOUND_MSG =
             "user with email %s not found";
     private final UserRepository userRepository;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
+    
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         
@@ -31,10 +39,45 @@ public class UserService implements UserDetailsService{
         .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 
+    public String signUpUser(User user){
+        boolean userExist = userRepository.findUserByEmail(user.getEmail())
+                            .isPresent();
+
+        if(userExist){
+            throw new IllegalStateException("email already taken");
+        }
+        //salts and hases the password
+        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodedPassword);
+
+        /*CrudRepository.save(S entity) : 
+Saves a given entity. Use the returned instance for further operations as the 
+save operation might have changed the entity instance completely. */
+        userRepository.save(user);
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+            token,
+            LocalDateTime.now(),
+            LocalDateTime.now().plusMinutes(15),
+            user
+        );
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+        // TODO: SEND EMAIL
+        return token;
+    }
+
+        public int enableUser(String email){
+            return userRepository.enableUser(email);
+        }
+
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,BCryptPasswordEncoder bCryptPasswordEncoder,ConfirmationTokenService confirmationTokenService) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.confirmationTokenService = confirmationTokenService;
     }
 
     public List<User> getUsers(){
@@ -66,12 +109,12 @@ public class UserService implements UserDetailsService{
  as well as classes defined as managed beans by the Jakarta EE specification,
  at both the class and method level where method level annotations override those at the class level. */
     @Transactional
-    public void updateStudent(Long userId, String name, String email) {
+    public void updateUser(Long userId, String name, String email) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new IllegalStateException("user with id " + userId + " does not exists"));
 
-        if(name != null && name.length() > 0 && !Objects.equals(user.getName(),name)){
-            user.setName(name);
+        if(name != null && name.length() > 0 && !Objects.equals(user.getFirstname(),name)){
+            user.setFirstname(name);
         }
 
         if(email != null && email.length() > 0 && !Objects.equals(user.getEmail(),email)){

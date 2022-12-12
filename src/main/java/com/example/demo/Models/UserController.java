@@ -55,6 +55,6 @@ public class UserController {
                                 //this means that it is not reqiured
                                 @RequestParam(required = false) String name,
                                 @RequestParam(required = false) String email){
-        userService.updateStudent(userId,name,email);
+        userService.updateUser(userId,name,email);
     }
 }

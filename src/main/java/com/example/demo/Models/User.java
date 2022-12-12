@@ -35,14 +35,14 @@ public class User implements UserDetails{
         generator = "user_sequence"
     )
     private long id;
-    private String name;
+    private String firstname;
     private LocalDate dob;
     private String email;
-    private String username;
+    private String lastname;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;;
-    private Boolean locked;
-    private Boolean enabled;
+    private Boolean locked = false;
+    private Boolean enabled = false;
     private String password;
     //this will not be in the database
     @Transient
@@ -64,17 +64,12 @@ public class User implements UserDetails{
 
   
     
-    public User(String name, LocalDate dob, String email, String username, UserRole userRole, Boolean locked,
-            Boolean enabled, String password, Integer age) {
-        this.name = name;
-        this.dob = dob;
+    public User(String firstname, String lastname, String email, String password, UserRole userRole) {
+        this.firstname = firstname;
         this.email = email;
-        this.username = username;
+        this.lastname = lastname;
         this.userRole = userRole;
-        this.locked = locked;
-        this.enabled = enabled;
         this.password = password;
-        this.age = age;
     }
 
 
@@ -88,13 +83,13 @@ public class User implements UserDetails{
     }
 
 
-    public String getName() {
-        return name;
+    public String getFirstname() {
+        return firstname;
     }
 
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstname(String name) {
+        this.firstname = name;
     }
 
 
@@ -127,13 +122,13 @@ public class User implements UserDetails{
         this.age = age;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLastname() {
+        return lastname;
     }
 
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
     
     public UserRole getUserRole() {
@@ -203,14 +198,19 @@ public class User implements UserDetails{
     }    
 
     @Override
+    public String getUsername() {
+        // TODO Auto-generated method stub
+        return email;
+    }
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
         result = prime * result + ((dob == null) ? 0 : dob.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
         result = prime * result + ((userRole == null) ? 0 : userRole.hashCode());
         result = prime * result + ((locked == null) ? 0 : locked.hashCode());
         result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
@@ -231,10 +231,10 @@ public class User implements UserDetails{
         User other = (User) obj;
         if (id != other.id)
             return false;
-        if (name == null) {
-            if (other.name != null)
+        if (firstname == null) {
+            if (other.firstname != null)
                 return false;
-        } else if (!name.equals(other.name))
+        } else if (!firstname.equals(other.firstname))
             return false;
         if (dob == null) {
             if (other.dob != null)
@@ -246,10 +246,10 @@ public class User implements UserDetails{
                 return false;
         } else if (!email.equals(other.email))
             return false;
-        if (username == null) {
-            if (other.username != null)
+        if (lastname == null) {
+            if (other.lastname != null)
                 return false;
-        } else if (!username.equals(other.username))
+        } else if (!lastname.equals(other.lastname))
             return false;
         if (userRole != other.userRole)
             return false;
@@ -275,5 +275,6 @@ public class User implements UserDetails{
             return false;
         return true;
     }
+    
 
 }
