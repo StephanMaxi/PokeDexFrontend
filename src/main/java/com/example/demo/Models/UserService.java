@@ -38,14 +38,18 @@ public class UserService implements UserDetailsService{
         return userRepository.findUserByEmail(email)
         .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
-
+    //sign up user fucntion
     public String signUpUser(User user){
+        //boolean to see if user exists
         boolean userExist = userRepository.findUserByEmail(user.getEmail())
                             .isPresent();
 
         if(userExist){
+            //TODO check of attributes are the same and
+            //TODO if email not confirmed send confirmation email
             throw new IllegalStateException("email already taken");
         }
+        //else
         //salts and hases the password
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
 
@@ -54,20 +58,23 @@ public class UserService implements UserDetailsService{
         /*CrudRepository.save(S entity) : 
 Saves a given entity. Use the returned instance for further operations as the 
 save operation might have changed the entity instance completely. */
+//saves the user using the CRUD repo interface
         userRepository.save(user);
-
+        //generates the registration token
         String token = UUID.randomUUID().toString();
+        //creates a new token object/table that joins to a user 
         ConfirmationToken confirmationToken = new ConfirmationToken(
             token,
             LocalDateTime.now(),
             LocalDateTime.now().plusMinutes(15),
             user
         );
+        //uses the service to save the token
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         // TODO: SEND EMAIL
         return token;
     }
-
+        //enables user
         public int enableUser(String email){
             return userRepository.enableUser(email);
         }
@@ -79,13 +86,13 @@ save operation might have changed the entity instance completely. */
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.confirmationTokenService = confirmationTokenService;
     }
-
+    //gets users
     public List<User> getUsers(){
 		return userRepository.findAll();
 	}
 
 
-
+    //addes users
     public void addNewUser(User user) {
        Optional<User> userOptional =  userRepository.findUserByEmail(user.getEmail());
        if(userOptional.isPresent()){

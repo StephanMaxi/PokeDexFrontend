@@ -24,6 +24,7 @@ public class WebSecurityConfig {
 
 
     @Bean
+    /*Defines a filter chain which is capable of being matched against an HttpServletRequest. in order to decide whether it applies to that request.*/
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
             .authenticationProvider(daoAuthenticationProvider())

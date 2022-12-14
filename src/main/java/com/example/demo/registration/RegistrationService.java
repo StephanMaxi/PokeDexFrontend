@@ -21,6 +21,7 @@ public class RegistrationService {
         private final ConfirmationTokenService confirmationTokenService;
         private final EmailSender emailSender;
 
+        //constructor
         public RegistrationService(EmailValidator emailValidator,UserService userService, ConfirmationTokenService confirmationTokenService,EmailSender emailSender){
             this.emailValidator = emailValidator;
             this.userService = userService;
@@ -28,18 +29,24 @@ public class RegistrationService {
             this.emailSender = emailSender;
         }
 
-
+        //register fucntion takes in a registration request 
         public String register(RegistrationRequest request) {
+            //boolean that uses the emailValidator test fuction to return a boolen to see if its valid
             boolean isValidEmail = emailValidator.test(request.getEmail());
+            //if not valid throws an exevption 
             if(!isValidEmail){
                 throw new IllegalStateException("email not valid");
             }
+            //if valid
+            //grabs the token
           String token =  userService.signUpUser(new User(request.getFirstName(),request.getLastName(),request.getEmail(),request.getPassword(),UserRole.USER));
+          //makes a link the confimation api
           String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
+          //builds and sends the email
           emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
            return token;
         }
-          
+          //confirm tokens to enable the account 
         @Transactional
         public String confirmToken(String token){
             ConfirmationToken confirmationToken = confirmationTokenService.getToken(token).orElseThrow(()->
