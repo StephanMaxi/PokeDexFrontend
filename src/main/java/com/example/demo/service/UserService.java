@@ -1,8 +1,5 @@
-package com.example.demo.Models;
-
-import java.time.LocalDate;
+package com.example.demo.service;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,11 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Models.User;
 import com.example.demo.registration.token.ConfirmationToken;
-import com.example.demo.registration.token.ConfirmationTokenService;
+import com.example.demo.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 

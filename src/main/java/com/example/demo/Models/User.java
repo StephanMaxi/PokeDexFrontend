@@ -18,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -40,7 +39,7 @@ public class User implements UserDetails{
     private String email;
     private String lastname;
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;;
+    private UserRole userRole;
     private Boolean locked = false;
     private Boolean enabled = false;
     private String password;

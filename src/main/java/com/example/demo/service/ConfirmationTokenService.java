@@ -1,9 +1,12 @@
-package com.example.demo.registration.token;
+package com.example.demo.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
+import com.example.demo.registration.token.ConfirmationToken;
+import com.example.demo.repository.ConfirmationTokenRepository;
 
 
 //service that contains all the functions to CRUD tokesns

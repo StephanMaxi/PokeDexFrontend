@@ -1,15 +1,15 @@
-package com.example.demo.registration;
+package com.example.demo.service;
 
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.Models.RegistrationRequest;
 import com.example.demo.Models.User;
 import com.example.demo.Models.UserRole;
-import com.example.demo.Models.UserService;
 import com.example.demo.email.EmailSender;
 import com.example.demo.registration.token.ConfirmationToken;
-import com.example.demo.registration.token.ConfirmationTokenService;
+import com.example.demo.registration.token.EmailValidator;
 
 import jakarta.transaction.Transactional;
 
@@ -63,7 +63,7 @@ public class RegistrationService {
 
              confirmationTokenService.setConfirmedAt(token);
              userService.enableUser(confirmationToken.getUser().getEmail());
-            return "confirmed";
+            return "account is now enabled";
              
         }
         private String buildEmail(String name, String link) {

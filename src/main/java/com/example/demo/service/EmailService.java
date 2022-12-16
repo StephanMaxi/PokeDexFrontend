@@ -1,10 +1,12 @@
-package com.example.demo.email;
+package com.example.demo.service;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.email.EmailSender;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

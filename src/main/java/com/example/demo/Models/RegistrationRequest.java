@@ -1,4 +1,4 @@
-package com.example.demo.registration;
+package com.example.demo.Models;
 
 public class RegistrationRequest {
     private final String firstName;
